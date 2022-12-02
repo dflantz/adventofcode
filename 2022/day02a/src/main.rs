@@ -4,7 +4,7 @@ enum Move {
     Scissors,
 }
 
-fn get_move(s: &str) -> Move {
+fn decrypt_move(s: &str) -> Move {
     match s {
         "A" => Move::Rock,
         "B" => Move::Paper,
@@ -56,7 +56,7 @@ fn main() {
         include_str!("../input.txt")
             .lines()
             .map(|n| n.split_once(" ").unwrap())
-            .map(|(them, you)| (get_move(them), get_move(you)))
+            .map(|(them, you)| (decrypt_move(them), decrypt_move(you)))
             .map(|(them, you)| calculate_points(them, you))
             .sum::<usize>(),
     );
