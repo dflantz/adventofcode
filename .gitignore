@@ -3,3 +3,4 @@ example.txt
 .venv
 .vscode
 target
+.python-version
