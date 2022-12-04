@@ -9,6 +9,7 @@ fn main() {
                     .map(|n| n.parse::<u32>().unwrap())
                     .sum::<u32>()
             })
-            .max().unwrap()
+            .max()
+            .unwrap()
     );
 }
