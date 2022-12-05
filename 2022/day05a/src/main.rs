@@ -7,12 +7,21 @@ fn main() {
 
     let _ = operations
         .lines()
-        .map(|line| line.chars().collect::<Vec<char>>())
-        .map(|v| (v[5], v[12], v[17]))
-        .map(|(count, from, to)| {
-            for _ in 0..count.to_string().parse::<usize>().unwrap() {
-                let ch = stack_hash.get_mut(&from).unwrap().pop().unwrap();
-                stack_hash.entry(to).and_modify(|v| v.push(ch));
+        .map(|line| {
+            line.split(" ")
+                .filter_map(|n| n.parse::<usize>().ok())
+                .collect::<Vec<usize>>()
+        })
+        .map(|v| {
+            for _ in 0..v[0] {
+                let ch = stack_hash
+                    .get_mut(&v[1].to_string().chars().next().unwrap())
+                    .unwrap()
+                    .pop()
+                    .unwrap();
+                stack_hash
+                    .entry(v[2].to_string().chars().next().unwrap())
+                    .and_modify(|v| v.push(ch));
             }
             0
         })
