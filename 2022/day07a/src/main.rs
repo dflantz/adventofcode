@@ -1,20 +1,29 @@
-use std::{borrow::Borrow, cell::RefCell, collections::HashMap, rc::Rc};
+#![feature(string_remove_matches)]
 
-struct Fs<'a> {
-    dirs: Vec<Directory<'a>>,
+use std::{
+    borrow::Borrow,
+    cell::RefCell,
+    collections::{HashMap, HashSet},
+    rc::Rc,
+};
+
+struct Fs {
+    dirs: Vec<Directory>,
 }
 
-impl Fs<'_> {
+impl Fs {
     fn get_dir_sum(&self, index: usize) -> usize {
         let mut sum = 0;
         for i in &self.dirs[index].child_directory_indices {
             sum += self.get_dir_sum(*i)
         }
-        return sum + self.dirs[index].file_sizes.iter().sum::<usize>();
+        let s = sum + self.dirs[index].file_sizes.iter().sum::<usize>();
+        println!("sum for {}: {}", &self.dirs[index].dir_name, s);
+        return s;
     }
 }
-struct Directory<'a> {
-    dir_name: &'a str,
+struct Directory {
+    dir_name: String,
     child_directory_indices: Vec<usize>,
     file_sizes: Vec<usize>,
     index: usize,
@@ -24,7 +33,7 @@ struct Directory<'a> {
 fn main() {
     let mut fs = Fs {
         dirs: vec![Directory {
-            dir_name: "/",
+            dir_name: "/".to_string(),
             child_directory_indices: Vec::new(),
             file_sizes: Vec::new(),
             index: 0,
@@ -33,6 +42,9 @@ fn main() {
     };
 
     let mut i = 0;
+
+    let mut dir_set: HashSet<&str> = HashSet::new();
+    let mut cur_dir = "/".to_string();
 
     for l in include_str!("../input.txt").lines() {
         let mut words = l.split(" ");
@@ -46,12 +58,15 @@ fn main() {
                         match target {
                             ".." => {
                                 i = fs.dirs[i].parent_directory_index.unwrap();
+                                cur_dir = fs.dirs[i].dir_name.clone();
                             }
                             "/" => {
+                                cur_dir = "/".to_string();
                                 i = 0;
                             }
                             _ => {
-                                i = fs.dirs.iter().position(|d| d.dir_name == target).unwrap();
+                                cur_dir.push_str(target);
+                                i = fs.dirs.iter().position(|d| d.dir_name == cur_dir).unwrap();
                             }
                         }
                     }
@@ -59,8 +74,10 @@ fn main() {
                 }
             }
             "dir" => {
+                let mut new_dir = cur_dir.clone();
+                new_dir.push_str(words.next().unwrap());
                 let d = Directory {
-                    dir_name: words.next().unwrap(),
+                    dir_name: new_dir,
                     child_directory_indices: Vec::new(),
                     file_sizes: Vec::new(),
                     index: fs.dirs.len(),
@@ -79,7 +96,8 @@ fn main() {
     //     dir_sum = fs.get_dir_sum(i);
     //     if dir_sum > 100000 {}
     // }
-    let ans = fs.dirs
+    let ans = fs
+        .dirs
         .iter()
         .enumerate()
         .map(|(i, _)| fs.get_dir_sum(i))
