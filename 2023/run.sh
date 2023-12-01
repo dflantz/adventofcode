@@ -47,9 +47,14 @@ cat << 'EOF'
 EOF
 
 if grep -n " = " "$filename"; then
-    echo -e "\nWhat's this? Declaring variables again?\nYou're WEAK! And your CODE is WEAK!\n"
+    cat << 'EOF'
+What's this? Declaring variables again?
+You're WEAK! And your CODE is WEAK!"
+EOF
     exit 1
 else
-    echo "\Awesome code. Nice size. Looking thick. Solid. Tight. Keep me posted on your progress.\n"
+    cat << 'EOF'
+Awesome code. Nice size. Looking thick. Solid. Tight. Keep me posted on your progress.
+EOF
     python "$filename"
 fi
