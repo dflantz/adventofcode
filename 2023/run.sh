@@ -9,6 +9,7 @@ fi
 filename="$1"
 
 cat << 'EOF'
+-------------FUNCTIONAL CHAD----------------
                  ,#####,
                  #_   _#
                  |a` `a|
@@ -44,8 +45,6 @@ cat << 'EOF'
            |==|
            \__/
 EOF
-
-echo "$functional_chad"
 
 if grep -n " = " "$filename"; then
     echo -e "\nWhat's this? Declaring variables again?\nYou're WEAK! And your CODE is WEAK!\n"
