@@ -2,19 +2,17 @@ import re
 
 
 def interpret_and_concat(s, number_mapping):
-    print(s)
     return int(
         "".join(
             map(
                 lambda x: str(number_mapping.get(x, x)),
-                [s[0], s[1]],
+                s,
             )
         )
     )
 
 
 def find_first_and_last_numeric_string(s, number_mapping):
-    print(s)
     return (
         next(re.finditer("|".join(["\d", *number_mapping.keys()]), s)).group(),
         next(
@@ -23,11 +21,6 @@ def find_first_and_last_numeric_string(s, number_mapping):
             )
         ).group()[::-1],
     )
-
-
-def first_and_last(s):
-    print(s)
-    return (s[0], s[len(s) - 1])
 
 
 def run(lines, number_mapping):
