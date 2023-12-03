@@ -1,29 +1,12 @@
-from collections import defaultdict
-import functools
-import json
-
-
-def sum_for_color(accumulator, pickings):
-    for color, n in pickings.items():
-        accumulator[color] += n
-    return accumulator
-
-
 def game_is_possible_with_pickings(game, max_per_color):
-    print(
-        functools.reduce(sum_for_color, game["pickings"], defaultdict(int)).items(),
-    )
     return all(
         map(
-            lambda item: item[1] <= max_per_color[item[0]],
-            functools.reduce(sum_for_color, game["pickings"], defaultdict(int)).items(),
+            lambda picking: all(
+                n <= max_per_color[color] for color, n in picking.items()
+            ),
+            game["pickings"],
         )
     )
-
-
-def strip_line(line):
-    print(line)
-    return line.strip().split(":")
 
 
 print(
@@ -56,7 +39,7 @@ print(
                         ),
                     },
                     map(
-                        strip_line,
+                        lambda line: line.strip().split(":"),
                         open("input.txt", "r").readlines(),
                     ),
                 ),
