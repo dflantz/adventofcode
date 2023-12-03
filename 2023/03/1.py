@@ -47,9 +47,9 @@ def matrix_value_is_symbol(matrix, coords):
     return False
 
 
-def f3(matrix, line_idx, chart_idx, char):
+def check_surrounding_values(matrix, line_idx, char_enum):
     return any(
-        matrix_value_is_symbol(matrix, f(line_idx, chart_idx))
+        matrix_value_is_symbol(matrix, f(line_idx, char_enum[0]))
         for f in [
             above,
             below,
@@ -63,13 +63,9 @@ def f3(matrix, line_idx, chart_idx, char):
     )
 
 
-def f2(matrix, line_idx, char):
-    return f3(matrix, line_idx, char[0], char[1])
-
-
-def f1(matrix, line):
+def find_adjacent_elements(matrix, line):
     return map(
-        lambda s: f2(matrix, line[0], s),
+        lambda s: check_surrounding_values(matrix, line[0], s),
         enumerate(line[1]),
     )
 
@@ -118,7 +114,7 @@ def run(matrix):
         [
             list(line)
             for line in map(
-                partial(f1, matrix),
+                partial(find_adjacent_elements, matrix),
                 enumerate(matrix),
             )
         ],
