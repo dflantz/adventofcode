@@ -56,5 +56,4 @@ else
     cat << 'EOF'
 Awesome code. Nice size. Looking thick. Solid. Tight. Keep me posted on your progress.
 EOF
-    python "$filename"
 fi
