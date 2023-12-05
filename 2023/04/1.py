@@ -3,8 +3,7 @@ from pipe import map
 print(
     sum(
         open("input.txt", "r").readlines()
-        | map(lambda line: line.strip().split(":"))
-        | map(lambda s: s[1].strip())
+        | map(lambda line: line.split(":")[1])
         | map(lambda numbers: numbers.split("|"))
         | map(
             lambda winners_and_picks: (

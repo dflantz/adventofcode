@@ -22,8 +22,7 @@ def duplicate_card_to_future(acc, curr):
 
 print(
     open("input.txt", "r").readlines()
-    | map(lambda line: line.strip().split(":"))
-    | map(lambda s: s[1].strip())
+    | map(lambda line: line.split(":")[1])
     | map(lambda numbers: numbers.split("|"))
     | map(
         lambda winners_and_picks: (
@@ -31,7 +30,11 @@ print(
             [int(s) for s in winners_and_picks[1].strip().split()],
         )
     )
-    | map(lambda winners_and_picks: len(set(winners_and_picks[0]) & set(winners_and_picks[1])))
+    | map(
+        lambda winners_and_picks: len(
+            set(winners_and_picks[0]) & set(winners_and_picks[1])
+        )
+    )
     | Pipe(enumerate)
     | pipe_reduce(duplicate_card_to_future, defaultdict(lambda: 1))
     | items
