@@ -123,5 +123,4 @@ print(
     | Pipe(enumerate)
     | map(lambda x: ((x[0] + 1) * x[1][1]))
     | Pipe(sum)
-    # | Pipe(list)
 )
