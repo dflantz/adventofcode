@@ -1,4 +1,4 @@
-### Advent of Code 2023: Variables are for the weak
+### Advent of Code 2023: Variables are for the weak (I only lasted 5 days)
 
 Python, but any explicit variable reassignment (aka instances of `' = '`) are an auto-failure.
 
