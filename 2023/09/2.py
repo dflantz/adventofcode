@@ -17,9 +17,7 @@ def get_leftmost_values(number_list):
 
 def calculate_previous_sequences(leftmost_values):
     cumulative = 0
-    for i, value in enumerate(leftmost_values[::-1]):
-        if i == 0:
-            continue
+    for value in leftmost_values[::-1][1:]:
         cumulative = value - cumulative
     return cumulative
 
@@ -28,5 +26,5 @@ print(
     | map(lambda line: line.split() | map(int) | Pipe(list))
     | map(get_leftmost_values)
     | map(calculate_previous_sequences)
-    | Pipe(list)
+    | Pipe(sum)
 )
