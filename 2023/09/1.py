@@ -8,7 +8,7 @@ def get_diffs(number_list):
     return diffs
 
 
-def run(number_list):
+def get_rightmost_values(number_list):
     rightmost_values = [number_list[-1]]
     while not (len(set(number_list)) == 1 and number_list[0] == 0):
         number_list = get_diffs(number_list)
@@ -19,7 +19,7 @@ def run(number_list):
 print(
     open("input.txt", "r").readlines()
     | map(lambda line: line.split() | map(int) | Pipe(list))
-    | map(run)
+    | map(get_rightmost_values)
     | map(sum)
     | Pipe(sum)
 )
