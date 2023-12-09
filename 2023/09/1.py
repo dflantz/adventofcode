@@ -9,6 +9,7 @@ def get_diffs(number_list):
 
 
 def get_rightmost_values(number_list):
+    number_list = number_list[::-1]
     rightmost_values = [number_list[-1]]
     while not (len(set(number_list)) == 1 and number_list[0] == 0):
         number_list = get_diffs(number_list)
