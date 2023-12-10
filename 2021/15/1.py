@@ -1,4 +1,5 @@
 from collections import defaultdict
+from heapq import heappop, heappush
 import sys
 
 if __name__ == "__main__":
@@ -9,43 +10,30 @@ if __name__ == "__main__":
 
     distance_from_source = defaultdict(lambda: sys.maxsize)
 
-    def traverse(
-        current_position=(y_max, x_max),
-        distance=0,
-        visited=defaultdict(bool),
-    ):
-        distance += coords[current_position[0]][current_position[1]]
-        visited[current_position[0], current_position[1]] = True
-        if distance < distance_from_source[current_position]:
-            distance_from_source[current_position] = distance
-        else:
-            return
-        if current_position == (0, 0):
-            return
-
-        for move in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-            candidate_coords = (
-                current_position[0] + move[0],
-                current_position[1] + move[1],
-            )
-            if (
-                0 <= candidate_coords[0] <= y_max
-                and 0 <= candidate_coords[1] <= x_max
-                and not visited[candidate_coords]
-            ):
-                try:
-                    traverse(
-                        candidate_coords,
-                        distance,
-                        visited.copy(),
-                    )
-                except IndexError:
-                    pass
-
+    positions_to_evaluate = [(0, y_max, x_max)]
     visited = defaultdict(bool)
-    visited[y_max, x_max] = True
-    for move in ((0, -1), (-1, 0)):
-        candidate_coords = (y_max + move[0], x_max + move[1])
-        traverse(candidate_coords, distance=0, visited=visited)
+
+    while len(positions_to_evaluate):
+        distance, y, x = heappop(positions_to_evaluate)
+        if visited[y, x]:
+            continue
+        visited[y, x] = True
+
+        # check neighbors.
+        for y_move, x_move in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            candidate_y, candidate_x = (y + y_move, x + x_move)
+            if 0 <= candidate_y <= y_max and 0 <= candidate_x <= x_max:
+                weight = coords[candidate_y][candidate_x]
+                distance_from_source[candidate_y, candidate_x] = min(
+                    distance_from_source[candidate_y, candidate_x], distance + weight
+                )
+                heappush(
+                    positions_to_evaluate,
+                    (
+                        distance_from_source[candidate_y, candidate_x],
+                        candidate_y,
+                        candidate_x,
+                    ),
+                )
 
     print(distance_from_source[0, 0])
