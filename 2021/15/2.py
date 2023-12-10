@@ -1,42 +1,45 @@
 from collections import defaultdict
-
-
-LETTER_TOTALS = defaultdict(int)
-
-
-def apply_step(rule_dict: dict, pair_counts: dict) -> dict:
-    new_pair_counts = pair_counts.copy()
-    for pair in list(pair_counts.keys()):
-        if (to_insert := rule_dict.get(pair)) is not None:
-            occurrences = pair_counts[pair]
-            LETTER_TOTALS[to_insert] += occurrences
-
-            new_pair_counts[pair[0] + to_insert] += occurrences
-            new_pair_counts[to_insert + pair[1]] += occurrences
-
-            new_pair_counts[pair] -= occurrences
-            if new_pair_counts[pair] < 1:
-                del new_pair_counts[pair]
-
-    return new_pair_counts
-
+from heapq import heappop, heappush
+import sys
 
 if __name__ == "__main__":
-    with open("14/input.txt", "r") as f:
-        polymer_template, rules = f.read().split("\n\n")
+    with open("input.txt", "r") as f:
+        coords = list(map(lambda s: [int(c) for c in s.strip()], f.readlines()))
+        tile_height = len(coords)
+        tile_width = len(coords[0])
+        num_tiles = 5
+        y_max = tile_height * num_tiles - 1
+        x_max = tile_width * num_tiles - 1
 
-    rule_dict = {}
-    for rule in rules.splitlines():
-        pair, to_insert = rule.split(" -> ")
-        rule_dict[pair] = to_insert
+    distance_from_source = defaultdict(lambda: sys.maxsize)
 
-    pair_counts = defaultdict(int)
-    for i in range(len(polymer_template)):
-        LETTER_TOTALS[polymer_template[i]] += 1
-        pair = polymer_template[i : i + 2]
-        pair_counts[pair] += 1
+    positions_to_evaluate = [(0, 0, 0)]
+    visited = defaultdict(bool)
 
-    for n in range(40):
-        pair_counts = apply_step(rule_dict, pair_counts)
+    while len(positions_to_evaluate):
+        distance, y, x = heappop(positions_to_evaluate)
+        if visited[y, x]:
+            continue
+        visited[y, x] = True
 
-    print((totals_sorted := sorted(LETTER_TOTALS.values()))[-1] - totals_sorted[0])
+        # check neighbors.
+        for y_move, x_move in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            candidate_y, candidate_x = (y + y_move, x + x_move)
+            if 0 <= candidate_y <= y_max and 0 <= candidate_x <= x_max:
+                weight = coords[candidate_y % tile_height][candidate_x % tile_width]
+                weight += candidate_y // tile_height
+                weight += candidate_x // tile_width
+                weight %= 9
+                distance_from_source[candidate_y, candidate_x] = min(
+                    distance_from_source[candidate_y, candidate_x], distance + weight
+                )
+                heappush(
+                    positions_to_evaluate,
+                    (
+                        distance_from_source[candidate_y, candidate_x],
+                        candidate_y,
+                        candidate_x,
+                    ),
+                )
+
+    print(distance_from_source[y_max, x_max])

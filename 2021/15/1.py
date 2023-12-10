@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     distance_from_source = defaultdict(lambda: sys.maxsize)
 
-    positions_to_evaluate = [(0, y_max, x_max)]
+    positions_to_evaluate = [(0, 0, 0)]
     visited = defaultdict(bool)
 
     while len(positions_to_evaluate):
@@ -36,4 +36,4 @@ if __name__ == "__main__":
                     ),
                 )
 
-    print(distance_from_source[0, 0])
+    print(distance_from_source[y_max, x_max])
