@@ -29,7 +29,10 @@ if __name__ == "__main__":
                 weight = coords[candidate_y % tile_height][candidate_x % tile_width]
                 weight += candidate_y // tile_height
                 weight += candidate_x // tile_width
-                weight %= 9
+                if weight % 9 == 0:
+                    weight = 9
+                else:
+                    weight %= 9
                 distance_from_source[candidate_y, candidate_x] = min(
                     distance_from_source[candidate_y, candidate_x], distance + weight
                 )
@@ -42,4 +45,4 @@ if __name__ == "__main__":
                     ),
                 )
 
-    print(distance_from_source[y_max, x_max])
+    print(distance_from_source[x_max, y_max])
